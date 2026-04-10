@@ -2,6 +2,7 @@ import { p } from '../p5Context.js';
 import { state, assets } from '../state.js';
 import { announceToScreenReader } from '../utils.js';
 import { nf, PI, CENTER, LEFT, RIGHT, TOP, BOTTOM } from '../constants.js';
+import { DEV, devConfig } from '../dev.js';
 import { drawBalls, resetBall, setupBall, triggerBallLaunch } from '../entities/ball.js';
 import { setupBricks, drawBricks, checkBallBrickCollisions, allBricksDestroyed } from '../entities/brick.js';
 import { drawBullets, moveBullets, shootBullets } from '../entities/bullet.js';
@@ -332,7 +333,7 @@ export function gameWon() {
 }
 
 export function resetGame() {
-  state.vidas = 3;
+  state.vidas = DEV ? devConfig.startLives : 3;
   state.currentScore = 0;
   state.bricks = [];
   setupBricks();
@@ -356,7 +357,7 @@ export function exitToMenu() {
   state.isShooting = false;
   state.magnetPowerUpActive = false;
   state.activePowerUpType = '';
-  state.vidas = 3;
+  state.vidas = DEV ? devConfig.startLives : 3;
   state.currentScore = 0;
   state.destroyedBricks = {};
 }

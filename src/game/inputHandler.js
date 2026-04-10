@@ -3,10 +3,12 @@ import { state } from '../state.js';
 import { ensureAudio, toggleMute } from '../audio.js';
 import { announceToScreenReader } from '../utils.js';
 import { triggerBallLaunch } from '../entities/ball.js';
-import { launchBall } from '../entities/powerUp.js';
+import { launchBall, PowerUp, getPowerUpImageByType } from '../entities/powerUp.js';
+import { loseLife } from './lives.js';
 import { exitToMenu } from './gameFunctions.js';
 import { LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, ENTER, ESCAPE, ARROW_CURSOR }
   from '../constants.js';
+import { DEV, toggleDevOverlay, nextPowerUpType } from '../dev.js';
 
 export function updateInput() {
   if (state.inputMode === 'keyboard') {
@@ -74,6 +76,26 @@ export function keyPressed() {
   if (p.key === 'm' || p.key === 'M') {
     toggleMute();
     return false;
+  }
+
+  if (DEV) {
+    if (p.key === 'd' || p.key === 'D') { toggleDevOverlay(); return false; }
+    if (p.key === 'n' || p.key === 'N') { loseLife(); return false; }
+    if ((p.key === 'b' || p.key === 'B') && state.isGameStarted) {
+      state.bricks = [];
+      state.remainingBricks = 0;
+      return false;
+    }
+    if ((p.key === 'p' || p.key === 'P') && state.isGameStarted) {
+      const type = nextPowerUpType();
+      const img = getPowerUpImageByType(type);
+      if (img) {
+        const cx = state.gameX + state.gameWidth / 2;
+        const cy = state.gameY + state.gameHeight * 0.3;
+        state.powerUps.push(new PowerUp(cx, cy, img, type));
+      }
+      return false;
+    }
   }
 
   if (p.keyCode === ESCAPE && state.isGameStarted) {

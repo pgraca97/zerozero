@@ -17,6 +17,8 @@ import {
   updateTitlePosition, drawReadyScreen, drawGameOver, drawGameWon,
   drawGame, drawCreditsAndHighestScore, readHighestScore, resetGame,
 } from './game/gameFunctions.js';
+import { DEV, devConfig } from './dev.js';
+import { drawDevOverlay } from './game/devOverlay.js';
 
 // Wire up the circular dependency: ball.js needs loseLife but can't
 // import it directly without a cycle. We inject it once at startup.
@@ -197,6 +199,11 @@ export function setup() {
   addAnimatedStars(assets.starSprites.green, 8);
   addAnimatedStars(assets.starSprites.red, 8);
 
+  if (DEV) {
+    state.vidas = devConfig.startLives;
+    state.initialSpeed = devConfig.ballSpeed;
+  }
+
   state.paddleObj = new Paddle();
   state.paddleObj.setup();
   setupBall();
@@ -269,6 +276,8 @@ export function draw() {
       state.cursorHidden = false;
     }
   }
+
+  drawDevOverlay();
 }
 
 export function windowResized() {
