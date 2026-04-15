@@ -282,10 +282,15 @@ export function draw() {
   drawMuteButton();
 
   if (!state.isTouchDevice) {
-    if (state.isGameStarted && !state.cursorHidden) {
+    const insideFrame = p.mouseX >= state.gameX &&
+      p.mouseX <= state.gameX + state.gameWidth &&
+      p.mouseY >= state.gameY &&
+      p.mouseY <= state.gameY + state.gameHeight;
+    const shouldHide = state.isGameStarted && insideFrame;
+    if (shouldHide && !state.cursorHidden) {
       p.noCursor();
       state.cursorHidden = true;
-    } else if (!state.isGameStarted && state.cursorHidden) {
+    } else if (!shouldHide && state.cursorHidden) {
       p.cursor(ARROW_CURSOR);
       state.cursorHidden = false;
     }

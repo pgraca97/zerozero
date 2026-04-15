@@ -26,10 +26,16 @@ export function updateInput() {
 }
 
 function updateKeyboardInput() {
-  if (!state.isGameStarted || !state.paddleObj.canMove) return;
+  if (!state.isGameStarted) return;
+
+  if (state.bulletsActive) {
+    state.isShooting = !!state.keysPressed[32];
+  }
+
+  if (!state.paddleObj.canMove) return;
   let dir = 0;
-  if (state.keysPressed[LEFT_ARROW]) dir = -1;
-  if (state.keysPressed[RIGHT_ARROW]) dir = 1;
+  if (state.keysPressed[LEFT_ARROW]) dir -= 1;
+  if (state.keysPressed[RIGHT_ARROW]) dir += 1;
   if (state.paddleObj.isInvertedCommands) dir *= -1;
   if (dir !== 0) state.paddleObj.move(dir);
 }
@@ -78,6 +84,7 @@ function handleStartOrAction() {
 
 export function keyPressed() {
   ensureAudio();
+  const wasPressed = state.keysPressed[p.keyCode];
   state.keysPressed[p.keyCode] = true;
 
   if (p.key === 'm' || p.key === 'M') {
@@ -110,8 +117,8 @@ export function keyPressed() {
     return false;
   }
 
-  if (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER ||
-      p.keyCode === UP_ARROW) {
+  if (!wasPressed && (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER ||
+      p.keyCode === UP_ARROW)) {
     handleStartOrAction();
   }
 

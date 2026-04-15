@@ -8,6 +8,7 @@ import {
   keyPressed, keyReleased,
   mousePressed, mouseReleased,
   touchStarted, touchMoved, touchEnded,
+  clearAllKeys,
 } from './game/inputHandler.js';
 
 const sketch = (instance) => {
@@ -29,3 +30,5 @@ const sketch = (instance) => {
 };
 
 new p5(sketch);
+
+window.addEventListener('blur', clearAllKeys);
