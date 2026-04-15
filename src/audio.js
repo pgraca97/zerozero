@@ -77,6 +77,18 @@ export function toggleMute() {
   }
 }
 
+export function suspendAudio() {
+  if (audioCtx && audioCtx.state === 'running') {
+    audioCtx.suspend();
+  }
+}
+
+export function resumeAudio() {
+  if (audioCtx && audioCtx.state === 'suspended' && !state.soundMuted) {
+    audioCtx.resume();
+  }
+}
+
 export function playHitSound() { playBuffer('hit', 0.5); }
 export function playCollisionSound() { playBuffer('collision', 1.0); }
 export function playCoinSound() { playBuffer('coin', 0.3); }

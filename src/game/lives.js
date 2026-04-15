@@ -6,10 +6,20 @@ import { gameOver } from './gameFunctions.js';
 import { DEV, devConfig } from '../dev.js';
 
 export function drawLives(gx, gy, gh) {
-  const lifeSize = 24 * state.scaleFactor;
-  const spacing = 8 * state.scaleFactor;
-  const startX = gx + 8 * state.scaleFactor;
-  const startY = gy + gh + 8 * state.scaleFactor;
+  const sf = state.scaleFactor;
+  const margin = 8 * sf;
+  const startX = gx + margin;
+  const startY = gy + gh + margin;
+  const availableW = state.gameWidth - margin * 2;
+
+  // Scale down heart size if too many lives would overflow
+  let lifeSize = 24 * sf;
+  let spacing = 8 * sf;
+  const totalNeeded = state.vidas * lifeSize + (state.vidas - 1) * spacing;
+  if (totalNeeded > availableW && state.vidas > 0) {
+    lifeSize = Math.max(12 * sf, availableW / (state.vidas * 1.4));
+    spacing = lifeSize * 0.3;
+  }
 
   for (let i = 0; i < state.vidas; i++) {
     p.image(assets.vidaImagem, startX + i * (lifeSize + spacing), startY, lifeSize, lifeSize);

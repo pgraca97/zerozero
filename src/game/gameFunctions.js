@@ -97,28 +97,31 @@ export function drawGameOver() {
 export function drawGameWon() {
   const ss = state.screenScale;
   const bonusPoints = state.vidas * 50;
+  const maxW = p.width * 0.9;
 
   p.textFont(assets.arcadeFont);
   p.textAlign(CENTER, CENTER);
   p.fill(0, 255, 0);
-  p.textSize(Math.max(32, 64 * ss));
-  p.text('YOU WIN!', p.width / 2, p.height / 2 - 40 * ss);
+  p.textSize(Math.min(Math.max(24, 64 * ss), maxW / 5));
+  p.text('YOU WIN!', p.width / 2, p.height / 2 - 50 * ss);
 
   p.textFont(assets.creditsFont);
   p.textAlign(CENTER, CENTER);
   p.fill(255);
-  p.textSize(Math.max(18, 32 * ss));
-  p.text('Your score was: ' + state.currentScore + ' + ' + bonusPoints + ' bonus',
-    p.width / 2, p.height / 2 + 30 * ss);
+  p.textSize(Math.min(Math.max(14, 28 * ss), maxW / 18));
+  p.text('Your score: ' + state.currentScore, p.width / 2, p.height / 2 + 10 * ss);
+  p.fill(200, 200, 255);
+  p.textSize(Math.min(Math.max(12, 22 * ss), maxW / 20));
+  p.text('+ ' + bonusPoints + ' lives bonus', p.width / 2, p.height / 2 + 45 * ss);
 
   if (state.newHighScore) {
-    p.textSize(Math.max(16, 28 * ss));
+    p.textSize(Math.min(Math.max(14, 28 * ss), maxW / 16));
     p.fill(255, 215, 0);
-    p.text('New Highest Score!', p.width / 2, p.height / 2 + 80 * ss);
+    p.text('New Highest Score!', p.width / 2, p.height / 2 + 90 * ss);
   }
 
   if (Math.floor(p.millis() / 500) % 2 === 0) {
-    p.textSize(Math.max(12, 18 * ss));
+    p.textSize(Math.min(Math.max(10, 18 * ss), maxW / 22));
     p.fill(255, 255, 255);
     p.text('Returning to menu...', p.width / 2, p.height / 2 + 130 * ss);
   }

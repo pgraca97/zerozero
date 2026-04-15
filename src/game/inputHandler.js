@@ -10,6 +10,13 @@ import { LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, ENTER, ESCAPE, ARROW_CUR
   from '../constants.js';
 import { DEV, toggleDevOverlay, nextPowerUpType } from '../dev.js';
 
+export function clearAllKeys() {
+  for (const key in state.keysPressed) {
+    state.keysPressed[key] = false;
+  }
+  state.isShooting = false;
+}
+
 export function updateInput() {
   if (state.inputMode === 'keyboard') {
     updateKeyboardInput();
@@ -103,7 +110,8 @@ export function keyPressed() {
     return false;
   }
 
-  if (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER) {
+  if (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER ||
+      p.keyCode === UP_ARROW) {
     handleStartOrAction();
   }
 
@@ -117,7 +125,8 @@ export function keyPressed() {
 export function keyReleased() {
   state.keysPressed[p.keyCode] = false;
 
-  if (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER) {
+  if (p.key === ' ' || p.keyCode === 32 || p.keyCode === ENTER ||
+      p.keyCode === UP_ARROW) {
     if (state.bulletsActive) state.isShooting = false;
   }
 }
@@ -156,6 +165,7 @@ export function touchStarted() {
     announceToScreenReader('Game started! Mode: touch');
   } else if (state.isGameStarted) {
     if (state.awaitingLaunch) triggerBallLaunch();
+    if (state.bulletsActive) state.isShooting = true;
     if (state.magnetPowerUpActive && state.balls.length > 0 &&
         state.balls[0].speedX === 0 && state.balls[0].speedY === 0) {
       launchBall();
@@ -174,5 +184,6 @@ export function touchMoved() {
 }
 
 export function touchEnded() {
+  if (state.bulletsActive) state.isShooting = false;
   return false;
 }

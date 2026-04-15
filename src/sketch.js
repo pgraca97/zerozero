@@ -1,6 +1,7 @@
 import { p } from './p5Context.js';
 import { state, assets } from './state.js';
 import { BRICK_COLORS, random, constrain, mapRange, ARROW_CURSOR } from './constants.js';
+import { suspendAudio, resumeAudio } from './audio.js';
 
 import { Estrelinha } from './background/estrelinha.js';
 import { CelestialBody } from './background/celestialBody.js';
@@ -11,7 +12,7 @@ import { setupBall, resetBall, setLoseLifeFn } from './entities/ball.js';
 import { setupBricks } from './entities/brick.js';
 import { setupPowerUps, deactivateActivePowerUp, shouldDeactivatePowerUp } from './entities/powerUp.js';
 
-import { updateInput } from './game/inputHandler.js';
+import { updateInput, clearAllKeys } from './game/inputHandler.js';
 import { drawLives, loseLife } from './game/lives.js';
 import {
   updateTitlePosition, drawReadyScreen, drawGameOver, drawGameWon,
@@ -212,6 +213,19 @@ export function setup() {
 
   state.titleYBase = p.height * 0.12;
   state.titleY = state.titleYBase;
+
+  // Clear stuck keys and pause audio when the page loses focus
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearAllKeys();
+      suspendAudio();
+    } else {
+      resumeAudio();
+    }
+  });
+  window.addEventListener('blur', () => {
+    clearAllKeys();
+  });
 }
 
 export function draw() {

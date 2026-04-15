@@ -56,7 +56,7 @@ export function setupPowerUps() {
   };
 
   state.powerUpMessages = {
-    bullets: 'Bullets activated! Press SPACE to shoot!',
+    bullets: state.isTouchDevice ? 'Bullets activated! Tap to shoot!' : 'Bullets activated! Press SPACE or UP to shoot!',
     fastBall: 'Fast Ball! The ball is now super speedy!',
     slowBall: 'Slow Ball! The ball is now slower!',
     bigBar: 'Big Bar! Your paddle is now bigger!',
@@ -98,7 +98,7 @@ function drawActivePowerUpTimer() {
     const sf = state.scaleFactor;
     const iconSize = 24 * sf;
     const padding = 8 * sf;
-    const barWidth = 120 * sf;
+    let barWidth = 120 * sf;
     const barHeight = 24 * sf;
 
     let barX, barY;
@@ -111,6 +111,11 @@ function drawActivePowerUpTimer() {
     } else {
       barX = state.gameX;
       barY = state.gameY + state.gameHeight + 72 * sf;
+      // Clamp bar width to game area when positioned below
+      const maxBarWidth = state.gameWidth - iconSize - padding * 2 - 50 * sf;
+      if (barWidth > maxBarWidth && maxBarWidth > 0) {
+        barWidth = maxBarWidth;
+      }
     }
 
     const icon = state.powerUpIcons[state.activePowerUpType];
@@ -157,9 +162,11 @@ function applyPowerUp(pu) {
   if (pu.type !== 'life') {
     const message = state.powerUpMessages[pu.type];
     if (message) {
+      const timerBarW = (120 + 24 + 8) * state.scaleFactor;
+      const availableW = state.gameWidth;
       const maxW = pu.type === 'magnet'
-        ? 400 * state.scaleFactor
-        : (120 + 24 + 8) * state.scaleFactor;
+        ? Math.min(400 * state.scaleFactor, availableW)
+        : Math.min(timerBarW, availableW);
       state.typewriter = new Typewriter(message, 50, maxW);
     }
   }
