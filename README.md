@@ -1,4 +1,4 @@
-# zeroZero
+# zerozero
  
 A browser brick-breaker game built with p5.js, vanilla JavaScript, and Vite.
  
